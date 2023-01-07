@@ -24,11 +24,12 @@ int is_palindrome(listint_t **head)
 	for (i = 0; temp; temp = temp->next, i++)
 		list_arr[i] = temp->n;
 
-	for (i = 0; i < (length / 2); i++, length--)
+	for (i = 0; i < (length / 2); i++)
 	{
-		if (list_arr[i] != list_arr[length - 1])
+		if (list_arr[i] != list_arr[length - 1 - i])
 			return (0);
 	}
 
+	free(list_arr);
 	return (1);
 }
