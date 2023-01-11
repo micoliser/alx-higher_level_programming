@@ -8,11 +8,11 @@ def roman_to_int(roman_string):
 
     i = 0
     while i < len(roman_string):
-        currnt = roman_string[i].upper()
+        currnt = roman_string[i]
         if i == len(roman_string) - 1:
             num += rom_num[currnt]
             break
-        nxt = roman_string[i + 1].upper()
+        nxt = roman_string[i + 1]
 
         if rom_num[currnt] >= rom_num[nxt]:
             num += rom_num[currnt]
