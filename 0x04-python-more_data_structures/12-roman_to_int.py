@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 def roman_to_int(roman_string):
     if not roman_string or type(roman_string) != str:
-        return None
+        return 0
 
     rom_num = {"M": 1000, "D": 500, "C": 100, "L": 50, "X": 10, "V": 5, "I": 1}
     num = 0
@@ -17,7 +17,7 @@ def roman_to_int(roman_string):
         if rom_num[currnt] >= rom_num[nxt]:
             num += rom_num[currnt]
         else:
-            num = num + (rom_num[nxt] - rom_num[currnt])
+            num += rom_num[nxt] - rom_num[currnt]
             i += 1
         i += 1
 
