@@ -11,23 +11,23 @@ class Square:
 
     def __init__(self, size=0, position=(0, 0)):
         """ Initializes self """
-        self.__size = size
-        self.__position = position
+        self.size = size
+        self.position = position
 
     def __str__(self):
         s = ""
-        if self.__size == 0:
+        if self.size == 0:
             s += "\n"
             return s
-        for i in range(self.__position[1]):
+        for i in range(self.position[1]):
             s += "\n"
         count = 0
-        for i in range(self.__size):
-            for k in range(self.__position[0]):
+        for i in range(self.size):
+            for k in range(self.position[0]):
                 s += " "
-            for j in range(self.__size):
+            for j in range(self.size):
                 s += "#"
-            if count != self.__size - 1:
+            if count != self.size - 1:
                 s += "\n"
             count += 1
         return s
@@ -70,14 +70,14 @@ class Square:
 
     def my_print(self):
         """ Prints the square with character # to stdout """
-        if self.__size == 0:
+        if self.size == 0:
             print()
         else:
-            for i in range(self.__position[1]):
+            for i in range(self.position[1]):
                 print()
-            for i in range(self.__size):
-                for k in range(self.__position[0]):
+            for i in range(self.size):
+                for k in range(self.position[0]):
                     print(" ", end="")
-                for j in range(self.__size):
+                for j in range(self.size):
                     print("#", end="")
                 print()
