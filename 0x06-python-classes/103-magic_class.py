@@ -2,7 +2,6 @@
 """ This module contains a magic class that
     does exactly the same thing as aprticular bytecode """
 
-import dis
 class MagicClass:
     """ A magic class """
 
@@ -20,5 +19,3 @@ class MagicClass:
     def circumference(self):
         """ Returns the circumference """
         return 2 * math.pi * self.__radius
-
-dis.dis(MagicClass)
