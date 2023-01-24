@@ -2,15 +2,16 @@
 """ This module contains a magic class that
     does exactly the same thing as aprticular bytecode """
 
+
 class MagicClass:
     """ A magic class """
 
     def __init__(self, radius=0):
         """ Initialize self """
+        self.__radius = 0
         if type(radius) is not int and type(radius) is not float:
             raise TypeError("radius must be a number")
-        else:
-            self.__radius = radius
+        self.__radius = radius
 
     def area(self):
         """ Returns the area """
