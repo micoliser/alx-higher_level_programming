@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ This module contains a magic class that
     does exactly the same thing as aprticular bytecode """
+import math
 
 
 class MagicClass:
