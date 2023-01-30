@@ -9,5 +9,7 @@ import numpy as np
 
 
 def lazy_matrix_mul(m_a, m_b):
+    """ Multiplies two matrices using the numpy module """
+
     matrix_mul = np.matmul(m_a, m_b).tolist()
     return matrix_mul
