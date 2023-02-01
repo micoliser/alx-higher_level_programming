@@ -18,6 +18,8 @@ class TestMaxInteger(unittest.TestCase):
         self.assertEqual(max_integer([-1, -200, 0, -150]), 0)
         self.assertEqual(max_integer([-1000, -100, -2, -5, -1]), -1)
         self.assertEqual(max_integer([10, 10, 10, 10, 10]), 10)
+        self.assertEqual(max_integer([17, 2, 3, 5]), 17)
+        self.assertEqual(max_integer([1]), 1)
 
         mat = [
             [1, 5, 7, 2],

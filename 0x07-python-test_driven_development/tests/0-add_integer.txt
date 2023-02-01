@@ -25,3 +25,18 @@ and use it
 	Traceback (most recent call last):
 		...
 	TypeError: a must be an integer
+	>>> add_integer(4, "4")
+	Traceback (most recent call last):
+		...
+	TypeError: b must be an integer
+
+	test for NaN
+	>>> add_integer(float("nan"), 5)
+	Traceback (most recent call last):
+		...
+	ValueError: cannot convert float NaN to integer
+
+	>>> add_integer(float("1.7e+400"))
+	Traceback (most recent call last):
+		...
+	OverflowError: cannot convert float infinity to integer

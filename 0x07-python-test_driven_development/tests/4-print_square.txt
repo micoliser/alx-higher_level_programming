@@ -22,7 +22,6 @@ and use it
 	##########
 	##########
 	>>> print_square(0)
-	<BLANKLINE>
 
 	test for negative integers
 	>>> print_square(-1)

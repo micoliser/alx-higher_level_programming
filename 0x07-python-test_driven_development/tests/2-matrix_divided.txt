@@ -70,3 +70,19 @@ and use it
 	Traceback (most recent call last):
 		...
 	TypeError: div must be a number
+
+	test for float(inf)
+
+	>>> matrix_divided([[1, 5], [3, 7]], float("inf"))
+	[[0.0, 0.0], [0.0, 0.0]]
+
+	missing arguments
+	>>> matrix_divided([[1]])
+	Traceback (most recent call last):
+		...
+	TypeError: matrix_divided() missing 1 required positional argument: 'div'
+
+	>>> matrix_divided()
+	Traceback (most recent call last):
+		...
+	TypeError: matrix_divided() missing 2 required positional arguments: 'matrix' and 'div'
