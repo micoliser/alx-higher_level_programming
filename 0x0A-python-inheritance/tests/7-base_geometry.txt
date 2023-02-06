@@ -12,49 +12,62 @@ and use it
 		...
 	Exception: area() is not implemented
 
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("my_int", 12)
+
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("width", 89)
+
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("name", "john")
 	Traceback (most recent call last):
 		...
 	TypeError: name must be an integer
 
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("name", (1, 2))
 	Traceback (most recent call last):
 		...
 	TypeError: name must be an integer
 
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("name", [5])
 	Traceback (most recent call last):
 		...
 	TypeError: name must be an integer
 
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("name", {"n": 4})
 	Traceback (most recent call last):
 		...
 	TypeError: name must be an integer
 
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("name", True)
 	Traceback (most recent call last):
 		...
 	TypeError: name must be an integer
 	
-	>> bg.integer_validator("height", 0)
+	>>> bg = BaseGeometry()
+	>>> bg.integer_validator("height", 0)
 	Traceback (most recent call last):
 		...
 	ValueError: height must be greater than 0
 	
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("width", -10)
 	Traceback (most recent call last):
 		...
 	ValueError: width must be greater than 0
 
 	Passing less arguments to validator
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator("name")
 	Traceback (most recent call last):
 		...
 	TypeError: BaseGeometry.integer_validator() missing 1 required positional argument: 'value'
 
+	>>> bg = BaseGeometry()
 	>>> bg.integer_validator()
 	Traceback (most recent call last):
 		...
@@ -68,6 +81,7 @@ and use it
 	TypeError: BaseGeometry.integer_validator() takes 3 positional arguments but 4 were given
 
 	passing more arguments to area
+	>>> bg = BaseGeometry()
 	>>> bg.area("name")
 	Traceback (most recent call last):
 		...
