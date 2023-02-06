@@ -26,8 +26,3 @@ class Square(Rectangle):
         """ prints the square """
 
         print("[Square] {}/{}".format(self.__size, self.__size))
-
-s = Square(13)
-
-print(s)
-print(s.area())
