@@ -17,16 +17,12 @@ class Student:
     def to_json(self, attrs=None):
         """ Retrieves the dictionary representation of the instance """
 
-        rtrv_all = True
         if type(attrs) is list:
             for item in attrs:
                 if type(item) != str:
-                    rtrv_all = True
-                else:
-                    rtrv_all = False
+                    return self.__dict__
 
-        if not rtrv_all:
             return {key: self.__dict__[key] for key in
                     attrs if key in self.__dict__}
-        else:
-            return self.__dict__
+        
+        return self.__dict__

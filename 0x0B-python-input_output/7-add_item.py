@@ -16,7 +16,10 @@ def main():
         if f.read() == "":
             arg_list = []
         else:
-            arg_list = load(file_name)
+            try:
+                arg_list = load(file_name)
+            except json.decoder.JSONDecodeError:
+                arg_list = []
 
     for i in range(1, len(sys.argv)):
         arg_list.append(sys.argv[i])
@@ -24,5 +27,4 @@ def main():
     save(arg_list, file_name)
 
 
-if __name__ == "__main__":
-    main()
+main()
