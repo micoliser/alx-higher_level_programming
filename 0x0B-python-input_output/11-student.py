@@ -31,5 +31,4 @@ class Student:
         """ replaces all attributes of the instance"""
 
         for key, val in json.items():
-            print("{}: {}".format(key, val))
             setattr(self, key, val)
