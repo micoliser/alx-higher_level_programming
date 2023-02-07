@@ -30,7 +30,7 @@ class Magic:
         """ print status code """
         print("File size: {:d}".format(self.size))
         for key in sorted(self.dic.keys()):
-            if self.dic[key] is not 0:
+            if self.dic[key] != 0:
                 print("{}: {:d}".format(key, self.dic[key]))
 
 
@@ -41,14 +41,14 @@ if __name__ == "__main__":
 
     try:
         for line in sys.stdin:
-            if nlines % 10 == 0 and nlines is not 0:
+            if nlines % 10 == 0 and nlines != 0:
                 magic.print_info()
 
             try:
                 list_line = [x for x in line.split(" ") if x.strip()]
                 magic.add_status_code(list_line[-2])
                 magic.size += int(list_line[-1].strip("\n"))
-            except:
+            except Exception:
                 pass
             nlines += 1
     except KeyboardInterrupt:
