@@ -8,7 +8,12 @@ from models.square import Square
 class BaseTest(unittest.TestCase):
     """ class to test the Base class """
 
-    def test_base(self):
+    def setUp(self):
+        """ calls before each test """
+
+        Base._Base__nb_objects = 0
+
+    def test_base_id(self):
         """ test the base class """
 
         b1 = Base()
@@ -23,6 +28,20 @@ class BaseTest(unittest.TestCase):
         self.assertEqual(b6.id, -10)
         b7 = Base(0)
         self.assertEqual(b7.id, 0)
+
+    def test_base_id_string(self):
+        """ test base id with strings """
+
+        b1 = Base("3")
+        self.assertEqual(b1.id, "3")
+        b2 = Base("1")
+        self.assertEqual(b1.id, "1")
+
+    def test_base_id_more_args(self):
+        """ test id with more args than expected """
+
+        with self.assertRaises(TypeError):
+            b1 = Base(1, 4)
 
     def test_base_to_json_string(self):
         """ test the to_json_string """
