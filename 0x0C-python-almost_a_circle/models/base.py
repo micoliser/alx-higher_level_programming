@@ -42,9 +42,6 @@ class Base:
     def create(cls, **dictionary):
         """ returns an instance with all attributes set """
 
-        if not dictionary:
-            return
-
         new = cls(1, 1)
         new.update(**dictionary)
 
