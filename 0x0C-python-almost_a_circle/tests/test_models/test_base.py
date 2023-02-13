@@ -35,7 +35,7 @@ class BaseTest(unittest.TestCase):
         b1 = Base("3")
         self.assertEqual(b1.id, "3")
         b2 = Base("1")
-        self.assertEqual(b1.id, "1")
+        self.assertEqual(b2.id, "1")
 
     def test_base_id_more_args(self):
         """ test id with more args than expected """
