@@ -637,9 +637,13 @@ class TestSquare(unittest.TestCase):
     def test_square_create_no_args(self):
         """ test create method with no args """
 
-        # returns None when called without args
         s1 = Square.create()
-        self.assertTrue(s1 is None)
+        self.assertEqual(s1.id, 1)
+        self.assertEqual(s1.width, 1)
+        self.assertEqual(s1.height, 1)
+        self.assertEqual(s1.size, 1)
+        self.assertEqual(s1.x, 0)
+        self.assertEqual(s1.y, 0)
 
     def test_square_load_from_file(self):
         """ test the load_from_file method """

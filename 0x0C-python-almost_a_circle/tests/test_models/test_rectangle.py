@@ -683,9 +683,12 @@ class RectangleTest(unittest.TestCase):
     def test_rect_create_no_args(self):
         """ test create method with no args """
 
-        # returns None when called without args
         r1 = Rectangle.create()
-        self.assertTrue(r1 is None)
+        self.assertEqual(r1.id, 1)
+        self.assertEqual(r1.width, 1)
+        self.assertEqual(r1.height, 1)
+        self.assertEqual(r1.x, 0)
+        self.assertEqual(r1.y, 0)
 
     def test_rect_load_from_file(self):
         """ test the load_from_file method """
