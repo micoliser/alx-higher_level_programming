@@ -1,4 +1,8 @@
 import unittest
+import io
+import sys
+import json
+from pathlib import Path
 from models.base import Base
 from models.rectangle import Rectangle
 from models.square import Square
@@ -252,6 +256,58 @@ class TestSquare(unittest.TestCase):
         with self.assertRaises(TypeError):
             s1.__str__("hey")
 
+    def test_square_display(self):
+        """ test the display method """
+
+        s1 = Square(4)
+        output = io.StringIO()
+        sys.stdout = output
+        s1.display()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(output.getvalue(), "####\n####\n####\n####\n")
+
+    def test_square_display2(self):
+        """ test the display method """
+
+        s1 = Square(3, 2, 1)
+        output = io.StringIO()
+        sys.stdout = output
+        s1.display()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(output.getvalue(), "\n  ###\n  ###\n  ###\n")
+
+    def test_square_display3(self):
+        """ test the display method """
+
+        s1 = Square(2, 2)
+        output = io.StringIO()
+        sys.stdout = output
+        s1.display()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(output.getvalue(), "  ##\n  ##\n")
+
+    def test_square_display4(self):
+        """ test the display method """
+
+        s1 = Square(4, 0, 3)
+        output = io.StringIO()
+        sys.stdout = output
+        s1.display()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(output.getvalue(), "\n\n\n####\n####\n####\n####\n")
+
+    def test_square_display_args(self):
+        """ test display with args """
+
+        s1 = Square(4)
+
+        with self.assertRaises(TypeError):
+            s1.display("hello")
+
     def test_square_update_args(self):
         """ test the square update method """
 
@@ -468,7 +524,7 @@ class TestSquare(unittest.TestCase):
         self.assertEqual(dict_s1["y"], 1)
         self.assertEqual(dict_s1["size"], 7)
 
-    def test_rect_to_dictionary_err(self):
+    def test_square_to_dictionary_err(self):
         """ test to_dictionary with error """
 
         s1 = Square(15)
@@ -479,10 +535,234 @@ class TestSquare(unittest.TestCase):
         with self.assertRaises(KeyError):
             dict_s1["width"]
 
-    def test_rect_to_dictionary_args(self):
+    def test_suqare_to_dictionary_args(self):
         """ test to_dictionary method with args """
 
         s1 = Square(10)
 
         with self.assertRaises(TypeError):
             dict_s1 = s1.to_dictionary("hey")
+
+    def test_square_save_to_file(self):
+        """ test the save to file method """
+
+        s1 = Square(6)
+        s2 = Square(4, 1, 3, 1)
+        Square.save_to_file([s1, s2])
+
+        sqr_file = Path("Square.json")
+        self.assertTrue(sqr_file.is_file())
+
+        sqr_list = [s1.to_dictionary(), s2.to_dictionary()]
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), json.dumps(sqr_list))
+
+    def test_square_save_to_file2(self):
+        """ test the save to file method """
+
+        s1 = Square(5, 3, 1)
+        Square.save_to_file([s1])
+
+        sqr_file = Path("Square.json")
+        self.assertTrue(sqr_file.is_file())
+
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), json.dumps([s1.to_dictionary()]))
+
+    def test_square_save_to_file3(self):
+        """ test the save to file method """
+
+        s1 = Square(2)
+        s2 = Square(2, 4, 1, 1)
+        s3 = Square(4, 1, 2)
+        Square.save_to_file([s1, s2, s3])
+
+        sqr_file = Path("Square.json")
+        self.assertTrue(sqr_file.is_file())
+
+        sqr_list = [s1.to_dictionary(), s2.to_dictionary(), s3.to_dictionary()]
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), json.dumps(sqr_list))
+
+    def test_square_save_to_file_none(self):
+        """ test the save to file method with none """
+
+        Square.save_to_file(None)
+
+        sqr_file = Path("Square.json")
+        self.assertTrue(sqr_file.is_file())
+
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), "[]")
+
+    def test_square_save_to_file_more_args(self):
+        """  test save to file with more args than expected """
+
+        s1 = Square(3)
+        s2 = Square(4)
+        with self.assertRaises(TypeError):
+            Square.save_to_file([s1], [s2])
+
+    def test_square_save_to_file_less_args(self):
+        """ test save to file with less args """
+
+        with self.assertRaises(TypeError):
+            Square.save_to_file()
+
+    def test_square_create(self):
+        """ test the create method """
+
+        obj_dict = {"id": 2, "size": 3, "y": 5, "x": 2}
+        s1 = Square.create(**obj_dict)
+
+        self.assertEqual(s1.id, 2)
+        self.assertEqual(s1.width, 3)
+        self.assertEqual(s1.height, 3)
+        self.assertEqual(s1.size, 3)
+        self.assertEqual(s1.x, 2)
+        self.assertEqual(s1.y, 5)
+
+        s2 = Square(5)
+        s2_dict = s2.to_dictionary()
+        s3 = Square.create(**s2_dict)
+
+        self.assertFalse(s2 is s3)
+        self.assertEqual(s3.id, 2)
+        self.assertEqual(s3.width, 5)
+        self.assertEqual(s3.height, 5)
+        self.assertEqual(s3.size, 5)
+        self.assertEqual(s3.x, 0)
+        self.assertEqual(s3.y, 0)
+
+    def test_square_create_no_args(self):
+        """ test create method with no args """
+
+        # returns None when called without args
+        s1 = Square.create()
+        self.assertTrue(s1 is None)
+
+    def test_square_load_from_file(self):
+        """ test the load_from_file method """
+
+        s1 = Square(10, 2, 4)
+        s2 = Square(4)
+        sqr_list = [s1, s2]
+
+        Square.save_to_file(sqr_list)
+        sqr_list_output = Square.load_from_file()
+
+        self.assertTrue(sqr_list_output[0] is not s1)
+        self.assertTrue(sqr_list_output[1] is not s2)
+
+        for i in range(2):
+            self.assertEqual(sqr_list_output[i].id, sqr_list[i].id)
+            self.assertEqual(sqr_list_output[i].height, sqr_list[i].height)
+            self.assertEqual(sqr_list_output[i].width, sqr_list[i].width)
+            self.assertEqual(sqr_list_output[i].size, sqr_list[i].size)
+            self.assertEqual(sqr_list_output[i].x, sqr_list[i].x)
+            self.assertEqual(sqr_list_output[i].y, sqr_list[i].y)
+
+    def test_rect_load_from_file_args(self):
+        """ test the load from file method with args """
+
+        s1 = Square(3)
+        s2 = Square(5)
+        sqr_list = [s1, s2]
+
+        Square.save_to_file(sqr_list)
+
+        with self.assertRaises(TypeError):
+            list_output = Square.load_from_file(3)
+
+    def test_square_save_to_file_csv(self):
+        """ test the save to file csv method """
+
+        s1 = Square(6)
+        s2 = Square(4, 1, 3, 1)
+        Square.save_to_file_csv([s1, s2])
+
+        sqr_file = Path("Square.csv")
+        self.assertTrue(sqr_file.is_file())
+
+        exp_str = "1,6,0,0\n1,4,1,3\n"
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), exp_str)
+
+    def test_square_save_to_file_csv2(self):
+        """ test the save to file csv method """
+
+        s1 = Square(5, 3, 1)
+        Square.save_to_file_csv([s1])
+
+        sqr_file = Path("Square.csv")
+        self.assertTrue(sqr_file.is_file())
+
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), "1,5,3,1\n")
+
+    def test_square_save_to_file_csv3(self):
+        """ test the save to file csv method """
+
+        s1 = Square(2)
+        s2 = Square(2, 4, 1, 1)
+        s3 = Square(4, 1, 2)
+        Square.save_to_file_csv([s1, s2, s3])
+
+        sqr_file = Path("Square.csv")
+        self.assertTrue(sqr_file.is_file())
+
+        exp_str = "1,2,0,0\n1,2,4,1\n2,4,1,2\n"
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), exp_str)
+
+    def test_square_save_to_file_csv_none(self):
+        """ test the save to file csv method with none """
+
+        Square.save_to_file_csv(None)
+
+        sqr_file = Path("Square.csv")
+        self.assertTrue(sqr_file.is_file())
+
+        with open(sqr_file, "r") as f:
+            self.assertEqual(f.read(), "[]\n")
+
+    def test_square_save_to_file_more_args(self):
+        """  test save to file csv with more args than expected """
+
+        s1 = Square(3)
+        s2 = Square(4)
+        with self.assertRaises(TypeError):
+            Square.save_to_file_csv([s1], [s2])
+
+    def test_square_load_from_file_csv(self):
+        """ test the load_from_file_csv method """
+
+        s1 = Square(10, 2, 4)
+        s2 = Square(4)
+        sqr_list = [s1, s2]
+
+        Square.save_to_file_csv(sqr_list)
+        sqr_list_output = Square.load_from_file_csv()
+
+        self.assertTrue(sqr_list_output[0] is not s1)
+        self.assertTrue(sqr_list_output[1] is not s2)
+
+        for i in range(2):
+            self.assertEqual(sqr_list_output[i].id, sqr_list[i].id)
+            self.assertEqual(sqr_list_output[i].height, sqr_list[i].height)
+            self.assertEqual(sqr_list_output[i].width, sqr_list[i].width)
+            self.assertEqual(sqr_list_output[i].size, sqr_list[i].size)
+            self.assertEqual(sqr_list_output[i].x, sqr_list[i].x)
+            self.assertEqual(sqr_list_output[i].y, sqr_list[i].y)
+
+    def test_rect_load_from_file_csv_args(self):
+        """ test the load from file csv method with args """
+
+        s1 = Square(3)
+        s2 = Square(5)
+        sqr_list = [s1, s2]
+
+        Square.save_to_file_csv(sqr_list)
+
+        with self.assertRaises(TypeError):
+            list_output = Square.load_from_file_csv(3)

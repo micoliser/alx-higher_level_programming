@@ -1,4 +1,8 @@
 import unittest
+import io
+import sys
+import json
+from pathlib import Path
 from models.rectangle import Rectangle
 from models.base import Base
 
@@ -281,6 +285,59 @@ class RectangleTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             r1.__str__("hey")
 
+    def test_rect_display(self):
+        """ test the display method """
+
+        r1 = Rectangle(3, 4)
+        output = io.StringIO()
+        sys.stdout = output
+        r1.display()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(output.getvalue(), "###\n###\n###\n###\n")
+
+    def test_rect_display2(self):
+        """ test the display method """
+
+        r1 = Rectangle(5, 5, 3, 2)
+        output = io.StringIO()
+        sys.stdout = output
+        r1.display()
+        sys.stdout = sys.__stdout__
+
+        exp_output = "\n\n   #####\n   #####\n   #####\n   #####\n   #####\n"
+        self.assertEqual(output.getvalue(), exp_output)
+
+    def test_rect_display3(self):
+        """ test the display method """
+
+        r1 = Rectangle(2, 1, 1, 0)
+        output = io.StringIO()
+        sys.stdout = output
+        r1.display()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(output.getvalue(), " ##\n")
+
+    def test_rect_display4(self):
+        """ test the display method """
+
+        r1 = Rectangle(4, 3, 0, 5)
+        output = io.StringIO()
+        sys.stdout = output
+        r1.display()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual(output.getvalue(), "\n\n\n\n\n####\n####\n####\n")
+
+    def test_rect_display_args(self):
+        """ test display with args """
+
+        r1 = Rectangle(2, 4)
+
+        with self.assertRaises(TypeError):
+            r1.display([])
+
     def test_rect_update_args(self):
         """ test rect update with args"""
 
@@ -529,3 +586,233 @@ class RectangleTest(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             dict_r1 = r1.to_dictionary(1)
+
+    def test_rect_save_to_file(self):
+        """ test the save to file method """
+
+        r1 = Rectangle(5, 6)
+        r2 = Rectangle(2, 4, 1, 1, 2)
+        Rectangle.save_to_file([r1, r2])
+
+        rect_file = Path("Rectangle.json")
+        self.assertTrue(rect_file.is_file())
+
+        rect_list = [r1.to_dictionary(), r2.to_dictionary()]
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), json.dumps(rect_list))
+
+    def test_rect_save_to_file2(self):
+        """ test the save to file method """
+
+        r1 = Rectangle(2, 5, 3)
+        Rectangle.save_to_file([r1])
+
+        rect_file = Path("Rectangle.json")
+        self.assertTrue(rect_file.is_file())
+
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), json.dumps([r1.to_dictionary()]))
+
+    def test_rect_save_to_file3(self):
+        """ test the save to file method """
+
+        r1 = Rectangle(2, 5, 3)
+        r2 = Rectangle(2, 4, 1, 1)
+        r3 = Rectangle(4, 5)
+        Rectangle.save_to_file([r1, r2, r3])
+
+        rect_file = Path("Rectangle.json")
+        self.assertTrue(rect_file.is_file())
+
+        rect_list = [
+            r1.to_dictionary(),
+            r2.to_dictionary(),
+            r3.to_dictionary()
+        ]
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), json.dumps(rect_list))
+
+    def test_rect_save_to_file_none(self):
+        """ test the save to file method with none """
+
+        Rectangle.save_to_file(None)
+
+        rect_file = Path("Rectangle.json")
+        self.assertTrue(rect_file.is_file())
+
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), "[]")
+
+    def test_rect_save_to_file_more_args(self):
+        """  test save to file with more args than expected """
+
+        r1 = Rectangle(2, 3)
+        r2 = Rectangle(4, 3)
+        with self.assertRaises(TypeError):
+            Rectangle.save_to_file([r1], [r2])
+
+    def test_rect_save_to_file_less_args(self):
+        """ test save to file with less args """
+
+        with self.assertRaises(TypeError):
+            Rectangle.save_to_file()
+
+    def test_rect_create(self):
+        """ test the create method """
+
+        obj_dict = {"id": 2, "width": 3, "height": 5, "x": 2}
+        r1 = Rectangle.create(**obj_dict)
+
+        self.assertEqual(r1.id, 2)
+        self.assertEqual(r1.width, 3)
+        self.assertEqual(r1.height, 5)
+        self.assertEqual(r1.x, 2)
+        self.assertEqual(r1.y, 0)
+
+        r2 = Rectangle(2, 2)
+        r2_dict = r2.to_dictionary()
+        r3 = Rectangle.create(**r2_dict)
+
+        self.assertFalse(r2 is r3)
+        self.assertEqual(r3.id, 2)
+        self.assertEqual(r3.width, 2)
+        self.assertEqual(r3.height, 2)
+        self.assertEqual(r3.x, 0)
+        self.assertEqual(r3.y, 0)
+
+    def test_rect_create_no_args(self):
+        """ test create method with no args """
+
+        # returns None when called without args
+        r1 = Rectangle.create()
+        self.assertTrue(r1 is None)
+
+    def test_rect_load_from_file(self):
+        """ test the load_from_file method """
+
+        r1 = Rectangle(10, 7, 2, 8)
+        r2 = Rectangle(2, 4)
+        rect_list = [r1, r2]
+
+        Rectangle.save_to_file(rect_list)
+        rect_list_output = Rectangle.load_from_file()
+
+        self.assertTrue(rect_list_output[0] is not r1)
+        self.assertTrue(rect_list_output[1] is not r2)
+
+        for i in range(2):
+            self.assertEqual(rect_list_output[i].id, rect_list[i].id)
+            self.assertEqual(rect_list_output[i].height, rect_list[i].height)
+            self.assertEqual(rect_list_output[i].width, rect_list[i].width)
+            self.assertEqual(rect_list_output[i].x, rect_list[i].x)
+            self.assertEqual(rect_list_output[i].y, rect_list[i].y)
+
+    def test_rect_load_from_file_args(self):
+        """ test the load from file method with args """
+
+        r1 = Rectangle(2, 3)
+        r2 = Rectangle(5, 2)
+        rect_list = [r1, r2]
+
+        Rectangle.save_to_file(rect_list)
+
+        with self.assertRaises(TypeError):
+            list_output = Rectangle.load_from_file(3)
+
+    def test_rect_save_to_file_csv(self):
+        """ test the save to file csv method """
+
+        r1 = Rectangle(5, 6)
+        r2 = Rectangle(2, 4, 1, 1, 2)
+        Rectangle.save_to_file_csv([r1, r2])
+
+        rect_file = Path("Rectangle.csv")
+        self.assertTrue(rect_file.is_file())
+
+        exp_str = "1,5,6,0,0\n2,2,4,1,1\n"
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), exp_str)
+
+    def test_rect_save_to_file_csv2(self):
+        """ test the save to file csv method """
+
+        r1 = Rectangle(2, 5, 3)
+        Rectangle.save_to_file_csv([r1])
+
+        rect_file = Path("Rectangle.csv")
+        self.assertTrue(rect_file.is_file())
+
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), "1,2,5,3,0\n")
+
+    def test_rect_save_to_file_csv3(self):
+        """ test the save to file csv method """
+
+        r1 = Rectangle(2, 5, 3)
+        r2 = Rectangle(2, 4, 1, 1)
+        r3 = Rectangle(4, 5)
+        Rectangle.save_to_file_csv([r1, r2, r3])
+
+        rect_file = Path("Rectangle.csv")
+        self.assertTrue(rect_file.is_file())
+
+        exp_str = "1,2,5,3,0\n2,2,4,1,1\n3,4,5,0,0\n"
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), exp_str)
+
+    def test_rect_save_to_file_csv_none(self):
+        """ test the save to file csv method with none """
+
+        Rectangle.save_to_file_csv(None)
+
+        rect_file = Path("Rectangle.csv")
+        self.assertTrue(rect_file.is_file())
+
+        with open(rect_file, "r") as f:
+            self.assertEqual(f.read(), "[]\n")
+
+    def test_rect_save_to_file_csv_more_args(self):
+        """  test save to file csv with more args than expected """
+
+        r1 = Rectangle(2, 3)
+        r2 = Rectangle(4, 3)
+        with self.assertRaises(TypeError):
+            Rectangle.save_to_file_csv([r1], [r2])
+
+    def test_rect_save_to_file_less_args(self):
+        """ test save to file with less args """
+
+        with self.assertRaises(TypeError):
+            Rectangle.save_to_file_csv()
+
+    def test_rect_load_from_file_csv(self):
+        """ test the load_from_file_csv method """
+
+        r1 = Rectangle(10, 7, 2, 8)
+        r2 = Rectangle(2, 4)
+        rect_list = [r1, r2]
+
+        Rectangle.save_to_file_csv(rect_list)
+        rect_list_output = Rectangle.load_from_file_csv()
+
+        self.assertTrue(rect_list_output[0] is not r1)
+        self.assertTrue(rect_list_output[1] is not r2)
+
+        for i in range(2):
+            self.assertEqual(rect_list_output[i].id, rect_list[i].id)
+            self.assertEqual(rect_list_output[i].height, rect_list[i].height)
+            self.assertEqual(rect_list_output[i].width, rect_list[i].width)
+            self.assertEqual(rect_list_output[i].x, rect_list[i].x)
+            self.assertEqual(rect_list_output[i].y, rect_list[i].y)
+
+    def test_rect_load_from_file_csv_args(self):
+        """ test the load from file csv method with args """
+
+        r1 = Rectangle(2, 3)
+        r2 = Rectangle(5, 2)
+        rect_list = [r1, r2]
+
+        Rectangle.save_to_file_csv(rect_list)
+
+        with self.assertRaises(TypeError):
+            Rectangle.load_from_file_csv(rect_list)

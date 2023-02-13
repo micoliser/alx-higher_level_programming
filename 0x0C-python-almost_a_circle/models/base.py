@@ -5,6 +5,7 @@
 """
 
 import json
+import csv
 
 
 class Base:
@@ -26,9 +27,10 @@ class Base:
         """ writes the JSON representation of list_objs to a file """
 
         list_dict = []
-        for obj in list_objs:
-            obj_dict = obj.to_dictionary()
-            list_dict.append(obj_dict)
+        if list_objs:
+            for obj in list_objs:
+                obj_dict = obj.to_dictionary()
+                list_dict.append(obj_dict)
 
         json_string = Base.to_json_string(list_dict)
         file_name = cls.__name__ + ".json"
@@ -39,6 +41,9 @@ class Base:
     @classmethod
     def create(cls, **dictionary):
         """ returns an instance with all attributes set """
+
+        if not dictionary:
+            return
 
         new = cls(1, 1)
         new.update(**dictionary)
@@ -65,6 +70,56 @@ class Base:
 
         return list_objs
 
+    @classmethod
+    def save_to_file_csv(cls, list_objs):
+        """ saves instances to a file in csv format """
+
+        attrs = ["id", "size", "width", "height", "x", "y"]
+        list_arr = []
+        if list_objs:
+            for obj in list_objs:
+                obj_dict = obj.to_dictionary()
+                row = []
+                for attr in attrs:
+                    try:
+                        row.append(obj_dict[attr])
+                    except KeyError:
+                        pass
+                list_arr.append(row)
+
+        file_name = cls.__name__ + ".csv"
+        with open(file_name, "w") as f:
+            writer = csv.writer(f, delimiter=",")
+            if list_arr:
+                for row in list_arr:
+                    writer.writerow(row)
+            else:
+                writer.writerow(["[]"])
+
+    @classmethod
+    def load_from_file_csv(cls):
+        """ loads instances from a csv file """
+
+        file_name = cls.__name__ + ".csv"
+        try:
+            with open(file_name, "r") as f:
+                if cls.__name__ == "Rectangle":
+                    field_names = ["id", "width", "height", "x", "y"]
+                if cls.__name__ == "Square":
+                    field_names = ["id", "size", "x", "y"]
+                reader = csv.DictReader(f, fieldnames=field_names)
+                list_objs = []
+                for row in reader:
+                    for attr in field_names:
+                        row[attr] = int(row[attr])
+
+                    new_instance = cls.create(**row)
+                    list_objs.append(new_instance)
+        except FileNotFoundError:
+            return []
+
+        return list_objs
+
     @staticmethod
     def to_json_string(list_dictionaries):
         """ returns the JSON representation of list_dictionaries """
@@ -82,3 +137,27 @@ class Base:
             return []
         else:
             return json.loads(json_string)
+
+
+"""
+    @staticmethod
+    def draw(list_rectangles, list_squares):
+
+        window = turtle.Screen()
+        window.bgcolor("white")
+        drawer = turtle.Turtle()
+
+        for rect in list_rectangle:
+            drawer.color("blue")
+            for i in range(2):
+                drawer.forward(rect.height)
+                drawer.pensize(10)
+                drawer.right(rect.width)
+
+        for sqr in list_squares:
+            drawer.color("red")
+            for i in range(2):
+                drawer.forward(sqr.size)
+                drawer.pensize(15)
+                drawer.right(sqr.width)
+"""
