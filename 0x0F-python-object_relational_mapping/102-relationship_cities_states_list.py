@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """
-    This module edits the State object from
-    the database hbtn_0e_6_usa with id = 2
+    This module ists all City objects, contained in the
+    database hbtn_0e_101_usa
 """
 
 if __name__ == "__main__":
     import sys
-    from model_state import Base, State
+    from relationship_state import State
+    from relationship_city import City
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
@@ -23,11 +24,10 @@ if __name__ == "__main__":
                 dbname),
             pool_pre_ping=True)
 
-    Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    session.query(State).filter(State.id == 2).update(
-            {State.name: "New Mexico"})
+    cities = session.query(City).order_by(City.id)
 
-    session.commit()
+    for city in cities:
+        print("{}: {} -> {}".format(city.id, city.name, city.state.name))
