@@ -24,5 +24,5 @@ class City(Base):
 
     state_id = Column(
             Integer,
-            ForeignKey(State.id),
+            ForeignKey("states.id"),
             nullable=False)
