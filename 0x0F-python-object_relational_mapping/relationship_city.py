@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 """ This module contains the City and Base classes """
 
-from model_state import Base, State
 from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
 
 
 class City(Base):
