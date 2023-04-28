@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
-    This script sends a request to the URL and displays the body of the response
-    (decoded in utf-8) or an error on error
+    This script sends a request to the URL and displays the body of the
+    response (decoded in utf-8) or an error on error
 """
 if __name__ == "__main__":
     from sys import argv
