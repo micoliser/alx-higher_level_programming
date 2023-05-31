@@ -8,4 +8,4 @@ function toggleCls () {
   }
 }
 
-$('div#red_header').click(toggleCls);
+$('div#toggle_header').click(toggleCls);
